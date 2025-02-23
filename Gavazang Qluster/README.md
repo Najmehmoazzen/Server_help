@@ -66,7 +66,9 @@ module load compiler/latest
 
 ## **۴. اجرای کد با SLURM**
 
-سیستم SLURM یک سیستم مدیریت کارها (Job Scheduler) است که برای ارسال و اجرای کدها روی نودهای سرور استفاده می‌شود. 
+سیستم SLURM یک سیستم مدیریت کارها (Job Scheduler) است که برای ارسال و اجرای کدها روی نودهای سرور استفاده می‌شود. اسکریپت های دسته ای (batch scripts) به SLURM ارسال می شوند، جایی که در صف انتظار منابع رایگان قرار می گیرند.
+
+دستورالعمل های SLURM می توانند به عنوان header lines (خطی که با `#SBATCH` شروع می شوند) در  یک اسکریپت کار دسته ای یا به عنوان گزینه های خط فرمان در دستور sbatch ظاهر شوند.
 
 برای اجرای یک کد، باید یک **اسکریپت بچ (Batch Script)** بنویسید و آن را با `sbatch` ارسال کنید.
 
@@ -88,12 +90,17 @@ echo "Job started on $(hostname)"
 python my_script.py              # اجرای کد پایتون
 ```
 ### ** نحوه اجرای Job**
+برای ارسال اسکریپت job خود (به عنوان مثال، `batch_script.run`)، از دستور `sbatch` استفاده کنید.
+
 بعد از نوشتن این اسکریپت، آن را با دستور زیر روی سرور اجرا کنید:
 
 ```bash
 sbatch job_script.sh
 ```
-
+```
+$ sbatch batch_script.run
+Submitted batch job 123
+```
 پس از ارسال، SLURM یک شناسه کار (Job ID) اختصاص می‌دهد. مثلا:
 
 ```bash
@@ -108,6 +115,14 @@ Submitted batch job 123
 ```bash
 squeue
 ```
+```
+$ squeue
+
+JOBID  PARTITION     NAME      USER    ST       TIME  NODES   NODELIST(REASON) 
+123      long      gpu-cnn-    user1   R       1:02      1     atlas-262
+124      small     vasp-cu-    user2   R   10:02:23      2     \[atlas-262,atlas-271\]
+```
+
 ✅ مشاهده **فقط** کارهای شما:
 ```bash
 squeue -u username
